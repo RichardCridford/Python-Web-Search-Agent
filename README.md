@@ -8,6 +8,8 @@ The design focuses on:
 - Clear separation of concerns
 - A reusable agent loop
 
+# Adding a second tool 
+
 ## Features
 Automatic tool calling
 The agent calls the web_search tool whenever the user asks for:

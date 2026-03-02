@@ -31,5 +31,28 @@ TOOL_SCHEMAS =  [
                 "required": ["query"]
             }
         }
+    },
+
+    {
+        "type": "function",
+        "function": {
+            "name": "extract_facts",
+            "description": "Extract structured facts from text according to a user-defined JSON schema.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The unstructured text to extract information from."
+                    },
+                    "schema": {
+                        "type": "string",
+                        "description": "A JSON schema (as a string) describing the desired output structure."
+                    }
+                },
+                "required": ["text", "schema"]
+            }
+        }
     }
+
 ]
