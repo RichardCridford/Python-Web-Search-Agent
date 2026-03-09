@@ -33,26 +33,28 @@ TOOL_SCHEMAS =  [
         }
     },
 
-    {
+        {
         "type": "function",
         "function": {
-            "name": "extract_facts",
-            "description": "Extract structured facts from text according to a user-defined JSON schema.",
+            "name": "summariser",
+            "description": "Summarises raw text into concise bullet points.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "text": {
                         "type": "string",
-                        "description": "The unstructured text to extract information from."
+                        "description": "The raw text to summarise."
                     },
-                    "schema": {
-                        "type": "string",
-                        "description": "A JSON schema (as a string) describing the desired output structure."
+                    "max_points": {
+                        "type": "integer",
+                        "description": "Maximum number of bullet points to return.",
+                        "default": 5
                     }
                 },
-                "required": ["text", "schema"]
+                "required": ["text"]
             }
         }
     }
+
 
 ]
