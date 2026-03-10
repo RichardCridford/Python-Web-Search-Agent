@@ -60,7 +60,7 @@ class SummariserTool:
                 messages=[{"role": "user", "content": prompt}]
             )
 
-            raw_output = response.choices[0].message["content"]
+            raw_output = response.choices[0].message.content
             lines = raw_output.strip().split("\n")
 
 
