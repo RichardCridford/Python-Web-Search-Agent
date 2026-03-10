@@ -8,7 +8,6 @@ from openai import OpenAI
 client = OpenAI()
 
 
-
 class SummariserInput(BaseModel):
     """Input schema for the summariser tool."""
     # The user must attach a description, there is no default, lets you add extra information to each attribute in a model 
@@ -35,7 +34,7 @@ class SummariserTool:
     output_model = SummariserOutput
 
 
-def run(self, text: str, max_points: int = 5) -> Dict[str, Any]:
+    def run(self, text: str, max_points: int = 5) -> Dict[str, Any]:
         """
         Summarise the given text using an LLM.
 

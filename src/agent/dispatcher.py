@@ -1,6 +1,9 @@
 #dispatcher.py
 from agent.tools.web_search import web_search
-from agent.tools.extract_facts import extract_facts
+from agent.tools.summariser import SummariserTool
+
+summariser = SummariserTool()
+
 
 
 #-------------------------------------------------------------------
@@ -10,7 +13,7 @@ from agent.tools.extract_facts import extract_facts
 
 TOOL_FUNCTIONS = {
     "web_search": web_search,
-    "extract_facts": extract_facts,
+    "summariser": summariser.run,
 
 }
 
