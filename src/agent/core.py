@@ -90,16 +90,20 @@ GENERAL RULES
 # -----------------------------------------------------------------------------
 # Agent Loop 
 #-----------------------------------------------------------------------------
+
+conversation = [
+    {"role": "system", "content": SYSTEM_PROMPT}
+]
 def run_agent(user_input):
+    
+    # Add user message to conversation
+    conversation.append({"role": "user", "content": user_input})
+
+    
+    # First model call: decide whether to call a tool
     response = client.chat.completions.create(
         model="gpt-4o",
-        messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT
-            },
-            {"role": "user", "content": user_input}
-                ],
+        messages=conversation,
         tools=TOOL_SCHEMAS,
         tool_choice="auto"
         
@@ -108,9 +112,11 @@ def run_agent(user_input):
             #"type": "function",
             #"function": {"name": "web_search"}
                     #}
-)
+    )
 
     message = response.choices[0].message
+    conversation.append(message)
+
     # this for debugging to see if the tool is called
     print("RAW MODEL MESSAGE:", message)
 
@@ -125,56 +131,46 @@ def run_agent(user_input):
         # Execute the tool via dispatcher
         tool_result = dispatch_tool_call(name, args)
 
-        # Second model call: send tool result back
-        followup = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": SYSTEM_PROMPT 
-                },
-                  # Original user message
-                {
-                "role": "user",
-                "content": user_input
-                },
-                # CRITICAL grounding reminder
-                {
+        # Build follow-up messages including full history
+        followup_messages = conversation + [
+            {
                 "role": "assistant",
                 "content": (
                     "You must answer using ONLY the information in the tool result. "
                     "If information is not present in the tool result, say that it was not found. "
                     "Do not add any external knowledge, URLs, rumours, speculation, or context."
                 )
-                },
-
-                # REQUIRED: the assistant tool-call message
-                {
+            },
+            {
                 "role": "assistant",
                 "tool_calls": [
-                {
-                    "id": tool_call.id,
-                    "type": "function",
-                    "function": {
-                        "name": name,
-                        "arguments": json.dumps(args)
+                    {
+                        "id": tool_call.id,
+                        "type": "function",
+                        "function": {
+                            "name": name,
+                            "arguments": json.dumps(args)
+                        }
                     }
-                }
-                    ]
-                },
-
-
-                # REQUIRED: the tool result
-                {
+                ]
+            },
+            {
                 "role": "tool",
                 "tool_call_id": tool_call.id,
                 "content": json.dumps(tool_result)
-                }
+            }
+        ]
 
-                ]
+        followup = client.chat.completions.create(
+            model="gpt-4o",
+            messages=followup_messages
         )
 
-        return followup.choices[0].message.content
+        final_message = followup.choices[0].message
+        conversation.append(final_message)
+        return final_message.content
+
+
 
     # ---------------------------------------------------------------------
     # If no tool was called, return the model's normal message
