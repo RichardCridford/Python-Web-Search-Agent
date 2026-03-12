@@ -47,19 +47,24 @@ When the user asks for something like:
 “Summarise the latest news about renewable energy in the last 7 days.”
 
 the agent performs the following sequence:
+
 - web_search
 The agent detects that the request requires external, time‑sensitive information and calls the web search tool.
+
 - summariser
-After receiving the search results, the agent detects that the user wants a summary and calls the summariser tool to condense the search output into bullet‑point insights.
+After receiving the search results, the agent detects that the user wants a summary and calls the summariser tool to condense the search output into bullet‑points.
+
 - Final grounded answer
-The agent returns a final answer using only the summariser output, ensuring the response is concise, factual, and hallucination‑free.
-When tool‑chaining is triggered
+The agent returns a final answer using only the summariser output, ensuring the response is factual, hallucination‑free while still staying concise. 
+
+### When tool‑chaining is triggered
 Tool‑chaining occurs automatically when:
 - the user asks for a summary of information that must be retrieved externally
 - the user asks for “latest”, “recent”, or date‑range‑based summaries
 - the user requests a summary of news, events, or updates
 - the user asks for a summary of something that cannot be answered from internal knowledge
-Grounding guarantee
+
+### Grounding guarantee
 After tool‑chaining:
 - The final answer is grounded only in the summariser output.
 - No additional facts or assumptions are added.
